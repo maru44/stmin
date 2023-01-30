@@ -1,4 +1,4 @@
-module github.com/maru44/stmin
+module github.com/maru44/stool
 
 go 1.19
 

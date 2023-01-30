@@ -1,4 +1,4 @@
-package stmin
+package stool
 
 import (
 	"fmt"

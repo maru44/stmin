@@ -1,10 +1,10 @@
-package stmin
+package stool
 
 import (
 	"go/ast"
 )
 
-func GetTypeInfo(input ast.Expr) TypeInfo {
+func PurgePrefixes(input ast.Expr) TypeInfo {
 	var fin bool
 	var prefixes []TypePrefix
 	ex := input
@@ -20,26 +20,7 @@ func GetTypeInfo(input ast.Expr) TypeInfo {
 	out := TypeInfo{
 		Expr:     ex,
 		Prefixes: prefixes,
-	}
-
-	// return ex
-	switch ex.(type) {
-	case *ast.Ident:
-		out.ExprType = ExprTypeIdent
-	case *ast.StructType:
-		out.ExprType = ExprTypeStructType
-	case *ast.FuncType:
-		out.ExprType = ExprTypeFuncType
-	case *ast.InterfaceType:
-		out.ExprType = ExprTypeInterfaceType
-	case *ast.MapType:
-		out.ExprType = ExprTypeMapType
-	case *ast.SelectorExpr:
-		out.ExprType = ExprTypeSelectorExpr
-	case *ast.StarExpr:
-		out.ExprType = ExprTypeStarExpr
-	case *ast.BinaryExpr:
-		out.ExprType = ExprTypeBinaryExpr
+		ExprType: exprType(ex),
 	}
 	return out
 }
@@ -60,4 +41,26 @@ func purgePointerOrSlice(ex ast.Expr) (ast.Expr, TypePrefix, bool) {
 		return typ.Elt, TypePrefixFromString("[]"), false
 	}
 	return ex, TypePrefix{}, true
+}
+
+func exprType(ex ast.Expr) ExprType {
+	switch ex.(type) {
+	case *ast.Ident:
+		return ExprTypeIdent
+	case *ast.StructType:
+		return ExprTypeStructType
+	case *ast.FuncType:
+		return ExprTypeFuncType
+	case *ast.InterfaceType:
+		return ExprTypeInterfaceType
+	case *ast.MapType:
+		return ExprTypeMapType
+	case *ast.SelectorExpr:
+		return ExprTypeSelectorExpr
+	case *ast.StarExpr:
+		return ExprTypeStarExpr
+	case *ast.BinaryExpr:
+		return ExprTypeBinaryExpr
+	}
+	return ExprType("")
 }
